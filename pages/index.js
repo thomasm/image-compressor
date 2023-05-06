@@ -13,17 +13,20 @@ import {
   FormLabel,
   Alert,
   AlertIcon,
+  Spinner,
 } from '@chakra-ui/react';
 
 export default function Home() {
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState([]);
+
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     accept: 'image/jpeg, image/png',
     onDrop: async (acceptedFiles) => {
       const newImages = [];
     
       for (let file of acceptedFiles) {
-        console.log('File type:', file.type);
+        setLoading((prevState) => [...prevState, true]);
     
         try {
           const binaryImg = await file.arrayBuffer();
@@ -37,10 +40,17 @@ export default function Home() {
         } catch (error) {
           console.error('Error during API call:', error.message);
           alert('An error occurred while processing the uploaded image. Please try again.');
+        } finally {
+          setLoading((prevState) => {
+            const updatedLoadingState = [...prevState];
+            updatedLoadingState.shift();
+            return updatedLoadingState;
+          });
         }
       }
       setImages([...images, ...newImages]);
-    },        
+    },
+    
   });
 
   return (
@@ -68,7 +78,12 @@ export default function Home() {
 
       <Stack direction="row" spacing={4} alignItems="center">
         {images.map((src, index) => (
-          <Image key={index} boxSize="150px" src={src} alt={`Compressed Image ${index + 1}`} />
+          <Image key={index + loading.length} boxSize="150px" src={src} alt={`Compressed Image ${index + 1}`} />
+        ))}
+        {loading.map((_, index) => (
+          <Box key={index} boxSize="150px" display="flex" justifyContent="center" alignItems="center">
+            <Spinner />
+          </Box>
         ))}
       </Stack>
     </VStack>
