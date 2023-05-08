@@ -13,5 +13,6 @@ const getEnvironmentVariable = (environmentVariable) => {
     awsSecretAccessKey: getEnvironmentVariable("AWS_SECRET_ACCESS_KEY"),
     awsRegion: getEnvironmentVariable("AWS_REGION"),
     s3BucketName: getEnvironmentVariable("S3_BUCKET_NAME"),
+    authKey: getEnvironmentVariable("PASSWORD_HASH"),
   };
   
