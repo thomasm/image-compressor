@@ -9,8 +9,8 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-export async function saveImageToBucket(fileBuffer, contentType) {
-  const fileName = `peil/tinify/thumb-${Date.now()}`;
+export async function saveImageToBucket(fileBuffer, contentType, originalFileName) {
+  const fileName = `peil/tinify/thumb-${originalFileName}`;
 
   const params = {
     Bucket: config.s3BucketName,

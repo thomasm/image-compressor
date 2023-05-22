@@ -17,6 +17,7 @@ export default async function uploadRouteHandler(req, res) {
         return;
       }
       const contentType = file.mimetype;
+      const originalFileName = decodeURIComponent(req.headers['x-file-name']);
   
       if (!contentType || !(contentType === 'image/jpeg' || contentType === 'image/png')) {
         console.log('Received content type:', contentType);
@@ -39,7 +40,7 @@ export default async function uploadRouteHandler(req, res) {
       const resized = source.resize({ method: 'scale', height: 1000 });
       const compressedData = await resized.toBuffer();
   
-      const publicUrl = await saveImageToBucket(compressedData, contentType);
+      const publicUrl = await saveImageToBucket(compressedData, contentType, originalFileName);
   
       res.status(200).json({ url: publicUrl });
     } catch (error) {

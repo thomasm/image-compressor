@@ -45,6 +45,7 @@ export default function Home() {
           const response = await axios.post('/api/upload', binaryImg, {
             headers: {
               'Content-Type': fileMimeType,
+              'X-File-Name': encodeURIComponent(file.name),
             },
           });
           newImages.push(response.data.url);
@@ -75,6 +76,7 @@ export default function Home() {
         right={2}
         justifyContent="flex-end"
         alignItems="center"
+        zIndex={1}
       >
         <IconButton
           aria-label="Toggle Dark Mode"
@@ -92,7 +94,7 @@ export default function Home() {
       >
         <VStack spacing={4} alignItems="center">
           <Heading mt={4} mb={4}>Bildeoptimalisering</Heading>
-          <Text mb={4}>Effektiv JPEG og PNG komprimering for Webflow.</Text>
+          <Text mb={4}>JPEG - PNG</Text>
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -127,9 +129,27 @@ export default function Home() {
           </Box>
 
           <Stack direction="row" spacing={4} alignItems="center">
-            {images.map((src, index) => (
-              <Image key={index + loading.length} boxSize="150px" src={src} alt={`Compressed Image ${index + 1}`} />
-            ))}
+          {images.map((src, index) => (
+  <Box key={index + loading.length} position="relative">
+    <Image boxSize="150px" src={src} alt={`Compressed Image ${index + 1}`} />
+    <Text fontSize="sm" mt={2}>{src.split('/').pop()}</Text>
+    <Button
+      position="relative"
+      left={0}
+      right={0}
+      mx="auto"
+      mt={2}
+      size="sm"
+      colorScheme="blue"
+      as="a"
+      href={src}
+      download={`compressed-image-${index + 1}`}
+    >
+      Download
+    </Button>
+    
+  </Box>
+))}
             {loading.map((_, index) => (
               <Box key={index} boxSize="150px" display="flex" justifyContent="center" alignItems="center">
                 <Spinner />
@@ -147,7 +167,7 @@ export default function Home() {
         textAlign="center"
       >
         <Text fontSize="sm" color={colorMode === "dark" ? "gray.200" : "gray.700"}>
-          &copy; {new Date().getFullYear()} Peil - Denne siden er forbeholdt kunder av Peil.
+          &copy; {new Date().getFullYear()}
         </Text>
       </Box>
     </Flex>
